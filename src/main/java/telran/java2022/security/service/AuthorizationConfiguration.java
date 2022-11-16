@@ -11,12 +11,16 @@ public class AuthorizationConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.httpBasic();
         http.csrf().disable();
         http.sessionManagement()
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests()
-                .antMatchers("/account/register/**").permitAll()
-                .anyRequest().authenticated();
+                .antMatchers("/account/register/**", "/forum/posts/**").permitAll()
+                .anyRequest().authenticated()
+//                .antMatchers(HttpMethod.DELETE, "/forum/post**")
+
+        ;
     }
 }
