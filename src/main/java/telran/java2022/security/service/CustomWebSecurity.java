@@ -15,23 +15,29 @@ public class CustomWebSecurity {
     final PostRepository postRepository;
     final UserAccountRepository userAccountRepository;
 
-    public boolean checkPostAuthor(String postId, String username){
+    public boolean checkPostAuthor(String postId, String username) {
         Post post = postRepository.findById(postId).orElse(null);
         return post != null && username.equalsIgnoreCase(post.getAuthor());
 
     }
 
-    public boolean isPasswordExpired (String username){
+    public boolean isPasswordExpired(String username) {
         UserAccount userAccount = userAccountRepository.findById(username).orElse(null);
-        LocalDateTime now = LocalDateTime.now().minusDays(30);
-        if (userAccount!=null){
-            int result = now.compareTo(userAccount.getPasswordChanged());
-            if (result > 0){
+        LocalDateTime now = LocalDateTime.now();
+
+        if (userAccount != null) {
+            if (userAccount.getPasswordChanged() == null) {
+//                System.out.println("no time");
                 return false;
             }
+            LocalDateTime userTime = userAccount.getPasswordChanged().plusDays(60);
+            if (!now.isAfter(userTime)) {
+//                System.out.println("not expired");
+                return true;
+            }
         }
-
-        return true;
+//        System.out.println("expired");
+        return false;
     }
 
 }

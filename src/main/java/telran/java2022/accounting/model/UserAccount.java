@@ -14,38 +14,41 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"login"})
 @Document(collection = "users")
 public class UserAccount {
-	@Id
-	String login;
-	@Setter
-	String password;
-	@Setter
-	String firstName;
-	@Setter
-	String lastName;
-	Set<String> roles;
+    @Id
+    String login;
+    @Setter
+    String password;
+    @Setter
+    String firstName;
+    @Setter
+    String lastName;
+    Set<String> roles;
 
-	@Getter
-	LocalDateTime passwordChanged = LocalDateTime.now();
+    @Getter
+    @Setter
+    LocalDateTime passwordChanged;
 
-	public UserAccount() {
-		roles = new HashSet<>();
-		roles.add("USER");
-	}
+    public UserAccount() {
+        roles = new HashSet<>();
+        roles.add("USER");
+    }
 
-	public UserAccount(String login, String password, String firstName, String lastName) {
-		this();
-		this.login = login;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
+    public UserAccount(String login, String password, String firstName, String lastName, LocalDateTime passwordChanged) {
+        this();
+        this.login = login;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passwordChanged = passwordChanged;
 
-	public boolean addRole(String role) {
-		return roles.add(role);
-	}
+    }
 
-	public boolean removeRole(String role) {
-		return roles.remove(role);
-	}
+    public boolean addRole(String role) {
+        return roles.add(role);
+    }
+
+    public boolean removeRole(String role) {
+        return roles.remove(role);
+    }
 
 }

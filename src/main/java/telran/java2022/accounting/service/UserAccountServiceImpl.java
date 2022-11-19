@@ -14,6 +14,8 @@ import telran.java2022.accounting.dto.exceptions.UserExistsException;
 import telran.java2022.accounting.dto.exceptions.UserNotFoundException;
 import telran.java2022.accounting.model.UserAccount;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class UserAccountServiceImpl implements UserAccountService, CommandLineRunner {
@@ -30,6 +32,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 		UserAccount userAccount = modelMapper.map(userRegisterDto, UserAccount.class);
 		String password = passwordEncoder.encode(userRegisterDto.getPassword());
 		userAccount.setPassword(password);
+		userAccount.setPasswordChanged(LocalDateTime.now());
 		repository.save(userAccount);
 		return modelMapper.map(userAccount, UserAccountResponseDto.class);
 	}
@@ -80,6 +83,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 		UserAccount userAccount = repository.findById(login).orElseThrow(() -> new UserNotFoundException());
 		String password = passwordEncoder.encode(newPassword);
 		userAccount.setPassword(password);
+		userAccount.setPasswordChanged(LocalDateTime.now());
 		repository.save(userAccount);
 	}
 	
@@ -87,7 +91,7 @@ public class UserAccountServiceImpl implements UserAccountService, CommandLineRu
 	public void run(String... args) throws Exception {
 		if(!repository.existsById("admin")) {
 			String password = passwordEncoder.encode("admin");
-			UserAccount userAccount = new UserAccount("admin", password , "", "");
+			UserAccount userAccount = new UserAccount("admin", password , "", "", LocalDateTime.now());
 			userAccount.addRole("MODERATOR");
 			userAccount.addRole("ADMINISTRATOR");
 			repository.save(userAccount);

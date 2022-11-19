@@ -24,6 +24,8 @@ public class AuthorizationConfiguration {
         http.authorizeRequests(authorize ->
              authorize
                      .mvcMatchers("/account/register/**", "/forum/posts/**").permitAll()
+                     .mvcMatchers(HttpMethod.PUT, "/account/password/**").authenticated()
+                     .mvcMatchers("/forum/**", "/account/**" ).access("@customWebSecurity.isPasswordExpired(authentication.name)")
                      .mvcMatchers("/account/user/*/role/*/**").hasRole("ADMINISTRATOR")
                      .mvcMatchers(HttpMethod.PUT, "/account/user/{login}/**").access("#login == authentication.name")
                      .mvcMatchers(HttpMethod.DELETE, "/account/user/{login}/**").access("#login == authentication.name or hasRole('ADMINISTRATOR')")
